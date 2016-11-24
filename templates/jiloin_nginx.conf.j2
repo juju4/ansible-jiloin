@@ -1,0 +1,24 @@
+
+server {
+    listen 443 ssl;
+    server_name jiloin.{{ ansible_fqdn }};
+
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers "EECDH+ECDSA+AESGCM:EECDH+aRSA+AESGCM:EECDH+ECDSA+SHA256:EECDH+aRSA+SHA256:EECDH+ECDSA+SHA384:EECDH+ECDSA+SHA256:EECDH+aRSA+SHA384:EDH+aRSA+AESGCM:EDH+aRSA+SHA256:EDH+aRSA:EECDH:!aNULL:!eNULL:!MEDIUM:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS:!RC4:!SEED";
+
+    server_tokens off;
+    add_header Strict-Transport-Security "max-age=31536000";
+    add_header X-Content-Type-Options nosniff;
+    add_header X-Frame-Options SAMEORIGIN;
+    add_header X-XSS-Protection "1; mode=block";
+#    add_header Content-Security-Policy "default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self'; img-src 'self'; style-src 'self' http://www.w3.org http://schema.org http://ogp.me; font-src 'self'; ";
+    add_header Content-Security-Policy "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self' http://www.w3.org http://schema.org http://ogp.me; font-src 'self'; ";
+
+    ssl_certificate {{ jitsi_meet_ssl_cert_path }}; 
+    ssl_certificate_key {{ jitsi_meet_ssl_key_path }};
+
+    root /var/www/jiloin;
+    index index.html index.htm;
+}
+

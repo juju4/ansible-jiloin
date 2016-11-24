@@ -1,0 +1,87 @@
+---
+
+- name: ensure jilion dependencies are present
+  package: name={{ item }} state=present
+  with_items:
+    - influxdb
+    - influxdb-client
+    - python-influxdb
+    - curl
+- name: Create database using custom credentials
+  influxdb_database:
+    hostname: "{{influxdb_ip_address}}"
+    username: "{{influxdb_username}}"
+    password: "{{influxdb_password}}"
+    database_name: "{{influxdb_database_name}}"
+    state: present
+
+
+- name: git clone jiloin repository
+  git: repo=https://github.com/jitsi/jiloin.git
+       dest=/var/www/jiloin
+       version=HEAD
+       update=no
+- name: ensure directories exist
+  file: dest={{ item }} state=directory mode=0755
+  with_items:
+    - /usr/share/jicofo/.sip-communicator
+- name: enable logging in jitsi videobridge
+  blockinfile:
+    dest: /usr/share/jicofo/.sip-communicator/sip-communicator.properties
+    create: yes
+    block: |
+      org.jitsi.videobridge.log.INFLUX_DB_ENABLED=true
+      org.jitsi.videobridge.log.INFLUX_URL_BASE=http://localhost:8086
+      org.jitsi.videobridge.log.INFLUX_DATABASE={{influxdb_database_name}}
+      org.jitsi.videobridge.log.INFLUX_USER={{influxdb_username}}
+      org.jitsi.videobridge.log.INFLUX_PASS={{influxdb_password}}
+    marker: "# {mark} ANSIBLE MANAGED BLOCK: jitsi videobridge logging"
+  notify:
+    - restart jitsi-videobridge
+- name: enable logging in jitsi jicofo
+  blockinfile:
+    dest: /usr/share/jicofo/.sip-communicator/sip-communicator.properties
+    create: yes
+    block: |
+      org.jitsi.jicofo.log.INFLUX_DB_ENABLED=true
+      org.jitsi.jicofo.log.INFLUX_URL_BASE=http://localhost:8086
+      org.jitsi.jicofo.log.INFLUX_DATABASE={{influxdb_database_name}}
+      org.jitsi.jicofo.log.INFLUX_USER={{influxdb_username}}
+      org.jitsi.jicofo.log.INFLUX_PASS={{influxdb_password}}
+    marker: "# {mark} ANSIBLE MANAGED BLOCK: jitsi jicofo logging"
+  notify:
+    - restart jicofo
+
+- name: enable logging for jitsi meet /etc/jitsi/meet/*.js
+  replace:
+    dest: "/etc/jitsi/meet/{{ ansible_fqdn }}-config.js"
+    regexp: "logStats: .*,"
+    replace: "logStats: true,"
+
+- name: update jiloin config.js
+  replace:
+    dest: /var/www/jiloin/services/config.js
+    regexp: "{{ item.re }}"
+    replace: "{{ item.rep }}"
+    backup: yes
+  with_items:
+    - { re: 'host: ".*"', rep: "host: \"{{ ansible_fqdn }}\"" }
+## no ssl: 8086, ssl: 8087
+    - { re: 'port: ".*"', rep: "port: \"8086\"" }
+    - { re: 'database:\s*".*"', rep: "database: \"{{influxdb_database_name}}\"" }
+    - { re: 'ssl: true', rep: 'ssl: false' }
+    - { re: 'daysAgo: \d+', rep: 'daysAgo: 7' }
+
+- name: add nginx virtualhost for jiloin
+  template:
+    src: jiloin_nginx.conf.j2
+    dest: /etc/nginx/sites-available/jiloin.conf
+    backup: yes
+  notify:
+    - restart nginx
+- name: enable jiloin virtualhost in nginx
+  file: src=/etc/nginx/sites-available/jiloin.conf dest=/etc/nginx/sites-enabled/jiloin.conf state=link
+  notify:
+    - restart nginx
+
+

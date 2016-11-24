@@ -1,0 +1,10 @@
+---
+
+influxdb_ip_address: localhost
+influxdb_username: jiloin
+influxdb_password: jiloin
+influxdb_database_name: jiloindb
+## readonly user?
+#influxdb_webuser: jilionweb
+#influxdb_webpass: jilionwebpassword
+
