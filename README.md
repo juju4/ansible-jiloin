@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/juju4/ansible-jiloin.svg?branch=master)](https://travis-ci.org/juju4/ansible-jiloin)
+[![Build Status - Master](https://travis-ci.org/juju4/ansible-jiloin.svg?branch=master)](https://travis-ci.org/juju4/ansible-jiloin)
+[![Build Status - Devel](https://travis-ci.org/juju4/ansible-jiloin.svg?branch=devel)](https://travis-ci.org/juju4/ansible-jiloin/branches)
 # Jiloin - Jitsi Logging Interface ansible role
 
 Ansible role to setup Jitsi Logging Interface
