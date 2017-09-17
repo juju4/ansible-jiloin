@@ -1,5 +1,7 @@
 ---
 
+- include: pyopenssl.yml
+
 - name: ensure jilion dependencies are present
   package: name={{ item }} state=present
   with_items:
@@ -7,6 +9,7 @@
     - influxdb-client
     - python-influxdb
     - curl
+
 - name: Create database using custom credentials
   influxdb_database:
     hostname: "{{influxdb_ip_address}}"
@@ -15,16 +18,17 @@
     database_name: "{{influxdb_database_name}}"
     state: present
 
-
 - name: git clone jiloin repository
   git: repo=https://github.com/jitsi/jiloin.git
        dest=/var/www/jiloin
        version=HEAD
        update=no
+
 - name: ensure directories exist
   file: dest={{ item }} state=directory mode=0755
   with_items:
     - /usr/share/jicofo/.sip-communicator
+
 - name: enable logging in jitsi videobridge
   blockinfile:
     dest: /usr/share/jicofo/.sip-communicator/sip-communicator.properties
@@ -38,6 +42,7 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK: jitsi videobridge logging"
   notify:
     - restart jitsi-videobridge
+
 - name: enable logging in jitsi jicofo
   blockinfile:
     dest: /usr/share/jicofo/.sip-communicator/sip-communicator.properties
@@ -79,9 +84,8 @@
     backup: yes
   notify:
     - restart nginx
+
 - name: enable jiloin virtualhost in nginx
   file: src=/etc/nginx/sites-available/jiloin.conf dest=/etc/nginx/sites-enabled/jiloin.conf state=link
   notify:
     - restart nginx
-
-
