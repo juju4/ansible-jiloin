@@ -8,3 +8,6 @@ influxdb_database_name: jiloindb
 #influxdb_webuser: jilionweb
 #influxdb_webpass: jilionwebpassword
 
+## avoid to conflict with jitsi-meet/java
+jiloin_nginx_port: 8443
+jiloin_nginx_servername: "jiloin.{{ ansible_fqdn }}"

@@ -1,7 +1,7 @@
 
 server {
-    listen 443 ssl;
-    server_name jiloin.{{ ansible_fqdn }};
+    listen {{ jiloin_nginx_port }} ssl;
+    server_name {{ jiloin_nginx_servername }};
 
     ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
     ssl_prefer_server_ciphers on;
