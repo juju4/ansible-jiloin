@@ -10,6 +10,11 @@
     - python-influxdb
     - curl
 
+- name: Ensure influxdb service is started
+  service:
+    name: influxdb
+    state: started
+
 - name: Create database using custom credentials
   influxdb_database:
     hostname: "{{influxdb_ip_address}}"
@@ -57,11 +62,16 @@
   notify:
     - restart jicofo
 
+- name: check if /etc/jitsi/meet/{{ ansible_fqdn }}-config.js exists
+  stat:
+    path: "/etc/jitsi/meet/{{ ansible_fqdn }}-config.js"
+  register: cfgjs
 - name: enable logging for jitsi meet /etc/jitsi/meet/*.js
   replace:
     dest: "/etc/jitsi/meet/{{ ansible_fqdn }}-config.js"
     regexp: "logStats: .*,"
     replace: "logStats: true,"
+  when: cfgjs.stat.exists
 
 - name: update jiloin config.js
   replace:
