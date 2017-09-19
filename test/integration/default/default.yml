@@ -6,6 +6,7 @@
 #    - jitsi_meet_server_name: "{{ ansible_fqdn }}"
 #    - jitsi_meet_server_name: "localhost"
 ## or
+## FIXME! hostname containing dot can create issues...
     - jitsi_meet_server_name: "{{ ansible_default_ipv4.address }}.nip.io"
     - jitsi_meet_ssl_cert_path: "/var/lib/prosody/{{ jitsi_meet_server_name }}.crt"
     - jitsi_meet_ssl_key_path: "/var/lib/prosody/{{ jitsi_meet_server_name }}.key"
