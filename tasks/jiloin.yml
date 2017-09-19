@@ -15,6 +15,12 @@
     name: influxdb
     state: started
 
+- name: Wait than influxdb network port is up
+  wait_for:
+    port: 8086
+    host: localhost
+    timeout: 300
+
 - name: Create database using custom credentials
   influxdb_database:
     hostname: "{{influxdb_ip_address}}"
