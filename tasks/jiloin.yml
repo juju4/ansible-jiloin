@@ -21,6 +21,7 @@
     host: localhost
     timeout: 300
 
+# https://github.com/ansible/ansible/issues/38204
 - name: Create database using custom credentials
   influxdb_database:
     hostname: "{{influxdb_ip_address}}"
