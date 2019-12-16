@@ -7,8 +7,14 @@
   with_items:
     - influxdb
     - influxdb-client
-    - python-influxdb
+#    - python-influxdb
     - curl
+
+# https://github.com/ansible/ansible/issues/38204
+- name: enforce recent influxdb python module
+  pip:
+    name: influxdb
+    state: present
 
 - name: Ensure influxdb service is started
   service:
