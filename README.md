@@ -13,10 +13,12 @@ Currently, role is build for jiloin and influxdb to be installed on same server 
 ### Ansible
 It was tested on the following versions:
  * 2.2
+ * 2.5
+ * 2.9
 
 ### Operating systems
 
-Ubuntu 16.04.
+Ubuntu 16.04 and 18.04.
 Influxdb is only available in xenial repository. Use other roles/repository if you want to use older distributions.
 
 ## Example Playbook
