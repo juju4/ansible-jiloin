@@ -93,6 +93,7 @@ after_failure:
   - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm python --version'
   - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm pip --version'
   - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm pip freeze'
+  - 'sudo docker exec --tty "$(cat ${container_id})" ansible -i inventory --connection=local -m setup localhost'
 
 after_script:
   # Clean up
