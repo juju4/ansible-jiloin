@@ -1,7 +1,6 @@
 ---
 
 - hosts: all
-#- hosts: test-kitchen
   vars:
 #    - jitsi_meet_server_name: "{{ ansible_fqdn }}"
 #    - jitsi_meet_server_name: "localhost"
