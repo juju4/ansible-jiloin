@@ -90,6 +90,9 @@ after_failure:
   - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm systemctl -l --no-pager status influxdb.service'
   - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm systemctl -l --no-pager status nginx.service'
   - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm journalctl -xe --no-pager'
+  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm python --version'
+  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm pip --version'
+  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm pip freeze'
 
 after_script:
   # Clean up
